@@ -1,0 +1,30 @@
+version: "3.3"
+    
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql/db.sql:/docker-entrypoint-initdb.d/db.sql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: master
+      MYSQL_DATABASE: sample
+      MYSQL_USER: sampleuser
+      MYSQL_PASSWORD: samplepass
+      MYSQL_ROOT_HOST: '%'
+  #  ports:
+   #   - "3306:3306"
+    
+  webpage:
+    depends_on:
+      - db
+    image: boyplrack/cloudtest:v1
+    ports:
+      - "80:80"
+    restart: always
+    links:
+      - db
+
+volumes:
+  db_data: {}
